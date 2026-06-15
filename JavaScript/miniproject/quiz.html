@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Quiz Game</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed, #ec4899);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .quiz-box {
+            width: 100%;
+            max-width: 650px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 22px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 0;
+            color: #111827;
+            font-size: 32px;
+        }
+
+        .top-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            font-weight: 700;
+            color: #4f46e5;
+        }
+
+        #question {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #111827;
+            line-height: 1.4;
+        }
+
+        .option-btn {
+            width: 100%;
+            padding: 16px;
+            margin: 10px 0;
+            border: 2px solid transparent;
+            border-radius: 14px;
+            background: #f1f5f9;
+            color: #1f2937;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: left;
+            transition: 0.25s;
+        }
+
+        .option-btn:hover {
+            background: #e0e7ff;
+            border-color: #6366f1;
+        }
+
+        .option-btn.selected {
+            background: #6366f1;
+            color: white;
+            border-color: #4338ca;
+        }
+
+        .next-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 15px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79,70,229,0.35);
+        }
+
+        .result-box {
+            text-align: center;
+        }
+
+        .result-box h2 {
+            font-size: 30px;
+            color: #111827;
+        }
+
+        .result-box p {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .restart-btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 12px;
+            background: #111827;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .restart-btn:hover {
+            background: #374151;
+        }
+
+        @media(max-width: 500px) {
+            .quiz-box {
+                padding: 22px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            #question {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-box">
+    <h1>Quiz Game</h1>
+
+    <div id="quiz-content">
+        <div class="top-info">
+            <span id="question-number"></span>
+            <span id="score">Score: 0</span>
+        </div>
+
+        <div id="question"></div>
+
+        <div id="options"></div>
+
+        <button id="nextBtn" class="next-btn" onclick="nextQuestion()">
+            Next Question
+        </button>
+    </div>
+</div>
+
+<script>
+const questions = [
+    {
+        question: "What does HTML stand for?",
+        options: [
+            "Hyper Text Markup Language",
+            "High Text Machine Language",
+            "Hyper Tool Multi Language",
+            "Home Text Markup Language"
+        ],
+        answer: 0
+    },
+    {
+        question: "Which language is used for styling web pages?",
+        options: ["HTML", "CSS", "Python", "Java"],
+        answer: 1
+    },
+    {
+        question: "Which language is used to make websites interactive?",
+        options: ["HTML", "CSS", "JavaScript", "SQL"],
+        answer: 2
+    },
+    {
+        question: "Which symbol is used for comments in JavaScript?",
+        options: ["//", "<!-- -->", "#", "**"],
+        answer: 0
+    },
+    {
+        question: "Which company developed JavaScript?",
+        options: ["Microsoft", "Netscape", "Google", "Apple"],
+        answer: 1
+    }
+];
+
+let currentQuestion = 0;
+let selectedAnswer = null;
+let correctAnswer = 0;
+let wrongAnswer = 0;
+
+function showQuestion() {
+    selectedAnswer = null;
+
+    document.getElementById("question-number").innerHTML =
+        "Question " + (currentQuestion + 1) + "/" + questions.length;
+
+    document.getElementById("score").innerHTML =
+        "Score: " + correctAnswer;
+
+    document.getElementById("question").innerHTML =
+        questions[currentQuestion].question;
+
+    document.getElementById("options").innerHTML = "";
+
+    for (let i = 0; i < questions[currentQuestion].options.length; i++) {
+        let button = document.createElement("button");
+
+        button.className = "option-btn";
+        button.innerHTML = questions[currentQuestion].options[i];
+
+        button.onclick = function () {
+            selectAnswer(i, button);
+        };
+
+        document.getElementById("options").appendChild(button);
+    }
+}
+
+function selectAnswer(index, button) {
+    let allButtons = document.querySelectorAll(".option-btn");
+
+    allButtons.forEach(function(btn) {
+        btn.classList.remove("selected");
+    });
+
+    button.classList.add("selected");
+    selectedAnswer = index;
+}
+
+function nextQuestion() {
+    if (selectedAnswer === null) {
+        alert("Please select one answer first!");
+        return;
+    }
+
+    if (selectedAnswer === questions[currentQuestion].answer) {
+        correctAnswer++;
+    } else {
+        wrongAnswer++;
+    }
+
+    currentQuestion++;
+
+    if (currentQuestion < questions.length) {
+        showQuestion();
+    } else {
+        showResult();
+    }
+}
+
+function showResult() {
+    document.getElementById("quiz-content").innerHTML = `
+        <div class="result-box">
+            <h2>Quiz Completed!</h2>
+            <p>Correct Answers: ${correctAnswer}</p>
+            <p>Wrong Answers: ${wrongAnswer}</p>
+            <button class="restart-btn" onclick="restartQuiz()">Restart Quiz</button>
+        </div>
+    `;
+}
+
+function restartQuiz() {
+    location.reload();
+}
+
+showQuestion();
+</script>
+
+</body>
+</html>

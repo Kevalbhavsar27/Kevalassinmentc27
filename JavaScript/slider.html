@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Full Screen Slider</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    overflow:hidden;
+}
+
+.main{
+    width:100vw;
+    height:100vh;
+    position:relative;
+}
+
+img{
+    width:100%;
+    height:100vh;
+    object-fit:cover;
+    display:none;
+}
+
+#img-1{
+    display:block;
+}
+
+.btn{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    padding:15px 25px;
+    border:none;
+    background:rgba(0,0,0,0.5);
+    color:white;
+    font-size:20px;
+    cursor:pointer;
+    z-index:10;
+    border-radius:5px;
+}
+
+#left{
+    left:20px;
+}
+
+#right{
+    right:20px;
+}
+
+.btn:hover{
+    background:rgba(0,0,0,0.8);
+}
+</style>
+</head>
+<body>
+
+<div class="main">
+
+    <button class="btn" id="left">&#10094;</button>
+    <button class="btn" id="right">&#10095;</button>
+
+    <img src="https://picsum.photos/id/1015/1920/1080" id="img-1">
+    <img src="https://picsum.photos/id/1025/1920/1080" id="img-2">
+    <img src="https://picsum.photos/id/1035/1920/1080" id="img-3">
+
+</div>
+
+<script>
+
+let counter = 1;
+let totalImages = 3;
+
+document.getElementById('right').addEventListener('click', function(){
+
+    document.getElementById('img-' + counter).style.display = "none";
+
+    counter++;
+
+    if(counter > totalImages){
+        counter = 1;
+    }
+
+    document.getElementById('img-' + counter).style.display = "block";
+});
+
+document.getElementById('left').addEventListener('click', function(){
+
+    document.getElementById('img-' + counter).style.display = "none";
+
+    counter--;
+
+    if(counter < 1){
+        counter = totalImages;
+    }
+
+    document.getElementById('img-' + counter).style.display = "block";
+});
+
+</script>
+
+</body>
+</html>
